@@ -1,0 +1,25 @@
+# ESPHome
+secrets.yaml
+.esphome/
+
+# Build artifacts
+*.bin
+*.elf
+*.map
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
