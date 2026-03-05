@@ -5,31 +5,41 @@ on:
     branches: [main]
     paths:
       - "*.yaml"
+      - "common/**"
       - ".github/workflows/build.yml"
   pull_request:
     paths:
       - "*.yaml"
+      - "common/**"
       - ".github/workflows/build.yml"
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         file:
-          - ble-proxy.yaml
+          - ble-proxy-1.yaml
+          - ble-proxy-2.yaml
+          - ble-proxy-3.yaml
     steps:
       - uses: actions/checkout@v4
 
       - name: Create dummy secrets
         run: |
-          cat > secrets.yaml <<'EOF'
+          cat > secrets.yaml <<'SECRETS'
           wifi_ssid: "test"
           wifi_password: "test1234"
           api_encryption_key: "dGVzdGtleXRlc3RrZXl0ZXN0a2V5dGVzdGtleTE="
           ota_password: "test"
-          EOF
+          fallback_ap_password: "test1234"
+          SECRETS
 
       - name: Build firmware
         uses: esphome/build-action@v4
@@ -42,3 +52,29 @@ jobs:
         with:
           name: firmware-${{ matrix.file }}
           path: ${{ steps.esphome-build.outputs.name }}
+
+  release:
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: firmware
+          merge-multiple: true
+
+      - name: Get current date
+        id: date
+        run: echo "date=$(date +'%Y%m%d-%H%M%S')" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ steps.date.outputs.date }}
+          name: Firmware build ${{ steps.date.outputs.date }}
+          body: |
+            Auto-built firmware from commit ${{ github.sha }}.
+          files: firmware/**/*.bin
+          make_latest: true

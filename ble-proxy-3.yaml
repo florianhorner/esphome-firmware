@@ -1,0 +1,7 @@
+substitutions:
+  name: ble-proxy-3
+  friendly_name: "BLE Proxy 3"
+  board: esp32dev
+
+packages:
+  base: !include common/ble-proxy-base.yaml
