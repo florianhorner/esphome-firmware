@@ -28,6 +28,9 @@ jobs:
           - ble-proxy-1.yaml
           - ble-proxy-2.yaml
           - ble-proxy-3.yaml
+          - ble-proxy-4.yaml
+          - ble-proxy-5.yaml
+          - ble-proxy-6.yaml
     steps:
       - uses: actions/checkout@v4
 
