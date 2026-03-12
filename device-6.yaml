@@ -1,0 +1,11 @@
+substitutions:
+  name: !secret device_6_name
+  friendly_name: !secret device_6_friendly_name
+  static_ip: !secret device_6_ip
+  api_encryption_key: !secret device_6_api_key
+  manifest_path: !secret device_6_manifest_path
+  gateway: !secret gateway
+  subnet: !secret subnet
+
+packages:
+  base: !include common/ble-proxy-base.yaml

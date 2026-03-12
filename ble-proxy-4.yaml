@@ -1,7 +1,0 @@
-substitutions:
-  name: ble-proxy-4
-  friendly_name: "BLE Proxy 4"
-  board: esp32dev
-
-packages:
-  base: !include common/ble-proxy-base.yaml

@@ -24,13 +24,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        file:
-          - ble-proxy-1.yaml
-          - ble-proxy-2.yaml
-          - ble-proxy-3.yaml
-          - ble-proxy-4.yaml
-          - ble-proxy-5.yaml
-          - ble-proxy-6.yaml
+        include:
+          - file: device-1.yaml
+            manifest_path: esphome-web-bbd05c
+          - file: device-2.yaml
+            manifest_path: esphome-web-b851c4
+          - file: device-3.yaml
+            manifest_path: esphome-web-b83c20
+          - file: device-4.yaml
+            manifest_path: esphome-web-a12370
+          - file: device-5.yaml
+            manifest_path: esp32-bluetooth-proxy-bc5488
+          - file: device-6.yaml
+            manifest_path: esp32-bluetooth-proxy-bc562c
     steps:
       - uses: actions/checkout@v4
 
@@ -39,9 +45,38 @@ jobs:
           cat > secrets.yaml <<'SECRETS'
           wifi_ssid: "test"
           wifi_password: "test1234"
-          api_encryption_key: "dGVzdGtleXRlc3RrZXl0ZXN0a2V5dGVzdGtleTE="
-          ota_password: "test"
-          fallback_ap_password: "test1234"
+          gateway: "192.168.1.1"
+          subnet: "255.255.255.0"
+          device_1_name: "ble-proxy-test1"
+          device_1_friendly_name: "Test BLE Proxy 1"
+          device_1_ip: "192.168.1.101"
+          device_1_api_key: "dGVzdGtleXRlc3RrZXl0ZXN0a2V5dGVzdGtleTE="
+          device_1_manifest_path: "esphome-web-bbd05c"
+          device_2_name: "ble-proxy-test2"
+          device_2_friendly_name: "Test BLE Proxy 2"
+          device_2_ip: "192.168.1.102"
+          device_2_api_key: "dGVzdGtleXRlc3RrZXl0ZXN0a2V5dGVzdGtleTE="
+          device_2_manifest_path: "esphome-web-b851c4"
+          device_3_name: "ble-proxy-test3"
+          device_3_friendly_name: "Test BLE Proxy 3"
+          device_3_ip: "192.168.1.103"
+          device_3_api_key: "dGVzdGtleXRlc3RrZXl0ZXN0a2V5dGVzdGtleTE="
+          device_3_manifest_path: "esphome-web-b83c20"
+          device_4_name: "ble-proxy-test4"
+          device_4_friendly_name: "Test BLE Proxy 4"
+          device_4_ip: "192.168.1.104"
+          device_4_api_key: "dGVzdGtleXRlc3RrZXl0ZXN0a2V5dGVzdGtleTE="
+          device_4_manifest_path: "esphome-web-a12370"
+          device_5_name: "ble-proxy-test5"
+          device_5_friendly_name: "Test BLE Proxy 5"
+          device_5_ip: "192.168.1.105"
+          device_5_api_key: "dGVzdGtleXRlc3RrZXl0ZXN0a2V5dGVzdGtleTE="
+          device_5_manifest_path: "esp32-bluetooth-proxy-bc5488"
+          device_6_name: "ble-proxy-test6"
+          device_6_friendly_name: "Test BLE Proxy 6"
+          device_6_ip: "192.168.1.106"
+          device_6_api_key: "dGVzdGtleXRlc3RrZXl0ZXN0a2V5dGVzdGtleTE="
+          device_6_manifest_path: "esp32-bluetooth-proxy-bc562c"
           SECRETS
 
       - name: Build firmware
@@ -53,8 +88,41 @@ jobs:
       - name: Upload firmware artifact
         uses: actions/upload-artifact@v4
         with:
-          name: firmware-${{ matrix.file }}
+          name: ${{ matrix.manifest_path }}
           path: ${{ steps.esphome-build.outputs.name }}
+
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: output
+
+      - name: Prepare Pages directory
+        run: |
+          mkdir -p pages
+          for dir in output/*/; do
+            manifest_path=$(basename "$dir")
+            mkdir -p "pages/${manifest_path}"
+            cp -r "${dir}"* "pages/${manifest_path}/"
+          done
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: pages
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 
   release:
     needs: build
