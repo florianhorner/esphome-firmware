@@ -1,0 +1,19 @@
+{
+  "name": "ble-proxy-b851c4-esp32",
+  "version": "2026.3.1",
+  "builds": [
+    {
+      "chipFamily": "ESP32",
+      "ota": {
+        "path": "ble-proxy-b851c4-esp32.ota.bin",
+        "md5": "1bc2a4de3871c37ec21add29ca2538ee"
+      },
+      "parts": [
+        {
+          "path": "ble-proxy-b851c4-esp32.factory.bin",
+          "offset": 0
+        }
+      ]
+    }
+  ]
+}

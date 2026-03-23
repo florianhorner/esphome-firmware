@@ -1,0 +1,19 @@
+{
+  "name": "ble-proxy-a12370-esp32",
+  "version": "2026.3.1",
+  "builds": [
+    {
+      "chipFamily": "ESP32",
+      "ota": {
+        "path": "ble-proxy-a12370-esp32.ota.bin",
+        "md5": "94c4012530fae730954ef53ecd8653b2"
+      },
+      "parts": [
+        {
+          "path": "ble-proxy-a12370-esp32.factory.bin",
+          "offset": 0
+        }
+      ]
+    }
+  ]
+}
