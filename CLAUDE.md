@@ -1,4 +1,9 @@
 
+
+## Fork safety
+
+**Never open PRs on upstream repositories.** When operating across multiple repos, always check if a repo is a fork (`gh repo view --json isFork`). If it is a fork, skip it — or at most push to the user's fork only. Never create PRs that target upstream repos the user doesn't own.
+
 ## Parallelization
 
 **Maximize concurrent work at all times.** The user runs Claude Max 20 (up to 20 parallel agents). Every agent must actively look for opportunities to parallelize:
