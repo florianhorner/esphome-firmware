@@ -1,0 +1,19 @@
+{
+  "name": "ble-proxy-bc5488-esp32",
+  "version": "2026.3.1",
+  "builds": [
+    {
+      "chipFamily": "ESP32",
+      "ota": {
+        "path": "ble-proxy-bc5488-esp32.ota.bin",
+        "md5": "bda369d404801a359931eef5856ecb9f"
+      },
+      "parts": [
+        {
+          "path": "ble-proxy-bc5488-esp32.factory.bin",
+          "offset": 0
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "ble-proxy-bc562c-esp32",
+  "version": "2026.3.1",
+  "builds": [
+    {
+      "chipFamily": "ESP32",
+      "ota": {
+        "path": "ble-proxy-bc562c-esp32.ota.bin",
+        "md5": "e43a5c04a8540efd30c29a9dead3d6c4"
+      },
+      "parts": [
+        {
+          "path": "ble-proxy-bc562c-esp32.factory.bin",
+          "offset": 0
+        }
+      ]
+    }
+  ]
+}
